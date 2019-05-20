@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Project;
+use App\Mail\ProjectCreated;
 use Illuminate\Http\Request;
 
 class ProjectsController extends Controller
@@ -41,7 +42,13 @@ class ProjectsController extends Controller
             'description' => ['required', 'min:3']
         ]);
 
-        Project::create($attributes + ['owner_id' => auth()->id()]);
+        $attributes['owner_id'] = auth()->id();
+
+        $project = Project::create($attributes);
+
+        \Mail::to($project->owner->email)->send(
+            new ProjectCreated($project)
+        );
 
         return redirect('/projects');
     }
@@ -57,6 +64,13 @@ class ProjectsController extends Controller
     {
 
         $this->authorize('update', $project);
+
+        $attributes = request()->validate([ 
+            
+            'title' => ['required', 'min:3'],
+
+            'description' => ['required', 'min:3']
+        ]);
 
         $project->update(request(['title', 'description']));
 

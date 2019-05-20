@@ -23,11 +23,7 @@
 
             <div class="control">
 
-               <textarea name="description" class="textarea {{ $errors->has('description') ? 'is-danger' : '' }}"required>
-               
-                    {{ old('description') }}
-               
-               </textarea>
+               <textarea name="description" class="textarea {{ $errors->has('description') ? 'is-danger' : '' }}"required>{{ old('description') }}</textarea>
                 
             </div>
         </div>
